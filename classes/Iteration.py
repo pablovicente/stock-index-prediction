@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-class Iteration:
+class Iteration(object):
     
     def __init__(self, startDate, endDate):
         self.startDate = startDate
