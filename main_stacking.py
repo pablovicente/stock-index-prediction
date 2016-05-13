@@ -58,10 +58,10 @@ mean_auc = 0.0
 for i in range(1):        
     cv_preds = clf.fit_predict(trainY, trainX, testX, testY, show_steps=True)
 
-#    fpr, tpr, _ = metrics.roc_curve(y[cv], cv_preds)
-#    roc_auc = metrics.auc(fpr, tpr)
-#    logger.info("AUC (fold %d/%d): %.5f", i + 1, CONFIG.iter, roc_auc)
-#    mean_auc += roc_auc
+    fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
+    roc_auc = metrics.auc(fpr, tpr)
+    print "AUC (fold %d/%d): %.5f" % (i + 1, CONFIG.iter, roc_auc)
+    mean_auc += roc_auc
 
 #    if CONFIG.diagnostics and i == 0:  # only plot for first fold
 #        logger.info("plotting learning curve")

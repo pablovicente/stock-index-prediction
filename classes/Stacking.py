@@ -1,7 +1,10 @@
 import scipy as sp
 import numpy as np
 import multiprocessing
-import functools
+import itertools
+
+from functools import partial
+from operator import itemgetter
 
 from sklearn.metrics import roc_curve, auc
 from sklearn.grid_search import GridSearchCV
@@ -45,11 +48,11 @@ class Stacking(object):
                         y_train, train, predict,
                         stack=self.stack, fwls=self.fwls)
 
-                    model_auc = self._compute_auc(y_test, stage0_predict[-1])
-                    mean_auc = self._compute_auc(y_test, mean_preds)
-                    stack_auc = self._compute_auc(y_test, stack_preds) \
+                    model_auc = compute_auc(y_test, stage0_predict[-1])
+                    mean_auc = compute_auc(y_test, mean_preds)
+                    stack_auc = compute_auc(y_test, stack_preds) \
                         if self.stack else 0
-                    fwls_auc = self._compute_auc(y_test, fwls_preds) \
+                    fwls_auc = compute_auc(y_test, fwls_preds) \
                         if self.fwls else 0
 
                     print("> AUC: %.4f (%.4f, %.4f, %.4f) [%s]", model_auc,
@@ -138,7 +141,7 @@ class Stacking(object):
         best_subset_indices = range(len(predictions_list))
 
         pool = multiprocessing.Pool(processes=4)
-        partial_compute_subset_auc = functools.partial(compute_subset_auc,
+        partial_compute_subset_auc = partial(compute_subset_auc,
                                              pred_set=predictions_list, y=y)
         best_auc = 0
         best_n = 0
@@ -153,30 +156,29 @@ class Stacking(object):
             best_subset_auc, best_subset_indices = max(
                 combination_results, key=itemgetter(0))
             print "- best subset auc (%d models): %.4f > %s" % (
-                n, best_subset_auc, n, list(best_subset_indices))
+                n, best_subset_auc, list(best_subset_indices))
             if best_subset_auc > best_auc:
                 best_auc = best_subset_auc
                 best_n = n
                 best_indices = list(best_subset_indices)
         pool.terminate()
 
-        print("best auc: %.4f", best_auc)
-        print("best n: %d", best_n)
-        print("best indices: %s", best_indices)
-        for i, (model, feature_set) in enumerate(self.models):
+        print "best auc: %.4f" % (best_auc)
+        print "best n: %d" % (best_n)
+        print "best indices: %s" % (best_indices)
+        for i, (model) in enumerate(self.models):
             if i in best_subset_indices:
-                logger.info("> model: %s (%s)", model.__class__.__name__,
-                            feature_set)
+                print "> model: %s " % (model.__class__.__name__)
 
         return best_subset_indices
-
-    def compute_subset_auc(indices, pred_set, y):
-        subset = [vect for i, vect in enumerate(pred_set) if i in indices]
-        mean_preds = sp.mean(subset, axis=0)
-        mean_auc = compute_auc(y, mean_preds)
-
-        return mean_auc, indices
-
-    def _compute_auc(self, y, y_pred):
+    
+def compute_auc(y, y_pred):
         fpr, tpr, _ = roc_curve(y, y_pred)
         return auc(fpr, tpr)
+
+def compute_subset_auc(indices, pred_set, y):
+    subset = [vect for i, vect in enumerate(pred_set) if i in indices]
+    mean_preds = sp.mean(subset, axis=0)
+    mean_auc = compute_auc(y, mean_preds)
+
+    return mean_auc, indices
