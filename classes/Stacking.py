@@ -55,7 +55,7 @@ class Stacking(object):
                     fwls_auc = compute_auc(y_test, fwls_preds) \
                         if self.fwls else 0
 
-                    print("> AUC: %.4f (%.4f, %.4f, %.4f) [%s]", model_auc,
+                    print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc,
                             mean_auc, stack_auc, fwls_auc,
                             toString(model))
 
