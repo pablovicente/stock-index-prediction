@@ -126,10 +126,8 @@ for i in range(dataset.shape[0]):
 
 train_df = dataset.ix[train_index]        
 test_df = dataset.ix[test_index]        
-train_df_b = dataset_b.ix[train_index]        
-test_df_b = dataset_b.ix[test_index]   
 
-trainX, trainY, testX, testY = ml_dataset.dataset_to_train(train_df, test_df, train_df_b, test_df_b, colsToRemove, colY, True)
+trainX, trainY, testX, testY = ml_dataset.dataset_to_train(train_df, test_df, binary=True)
 
 ## SVM
 scv = svm.SVC(kernel='rbf')
@@ -173,10 +171,9 @@ while i < rows:
     i = i + training_samples + test_samples + 2
     train_df = dataset.ix[train_indices]        
     test_df = dataset.ix[test_indices]        
-    train_df_b = dataset_b.ix[train_indices]        
-    test_df_b = dataset_b.ix[test_indices]   
     
-    trainX, trainY, testX, testY = ml_dataset.dataset_to_train(train_df, test_df, train_df_b, test_df_b, colsToRemove, colY, True)
+    
+    trainX, trainY, testX, testY = ml_dataset.dataset_to_train(train_df, test_df, binary=True)
    
     ## SVM
     scv = svm.SVC(kernel='rbf')
