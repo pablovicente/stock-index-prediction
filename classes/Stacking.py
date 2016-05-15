@@ -121,8 +121,11 @@ class Stacking(object):
         fwls_preds = None
 
         if stack:
+            print "----------------------------"
             self.generalizer.fit(X_train, y)
+            print self.generalizer
             stack_preds = self.generalizer.predict(X_cv)
+            print stack_preds
 
         #if self.fwls:
         #    meta, meta_cv = get_dataset('metafeatures', train, predict)

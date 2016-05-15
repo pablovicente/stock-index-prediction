@@ -1,6 +1,6 @@
 """
 Se parte de un conjunto de training y otro de testing.
-El conjunto de training es subdividio X_train y X_cv
+El conjunto de training es subdividido X_train y X_cv
 Se entrenan los clasificadores sobre cada una de las partes y posteriormente 
 se entrenan sobre todo el conjunto de testing
 """
@@ -10,84 +10,91 @@ import pandas as pd
 from sklearn.ensemble import (RandomForestClassifier, ExtraTreesClassifier, GradientBoostingClassifier)
 from sklearn import (metrics, cross_validation, linear_model, preprocessing)
 
+from utils import toString
+
 SEED = 42  # always use a seed for randomized procedures
 
-class Stacking(object):
+class Boosting(object):
     
-    def __init__(self, models, generalizer=None, model_selection=True,
-                 stack=False, fwls=False):        
+    def __init__(self, models):        
         self.models = models
-        self.model_selection = model_selection
-        self.stack = stack
-        self.fwls = fwls
-        self.generalizer = linear_model.RidgeCV(alphas=np.linspace(0, 200), cv=100)
+        
+    def fit_predict(self, trainX, trainY, testX, testY):
+        """
 
-    def fit(self):
-        modelRF.fit(X_train, y_train) 
-        modelXT.fit(X_train, y_train) 
-        modelGB.fit(X_train, y_train) 
+        """
 
-    def predict(self): 
-        predsRF = modelRF.predict_proba(X_cv)[:, 1]
-        predsXT = modelXT.predict_proba(X_cv)[:, 1]
-        predsGB = modelGB.predict_proba(X_cv)[:, 1]
+        X_train, X_cv, y_train, y_cv = cross_validation.train_test_split(trainX, trainY, test_size=0.5, random_state=SEED)
+
+        predict = []
+        # === Combine Models === #
+        # Do a linear combination using a cross_validated data split
+        for model in self.models:
+            model.fit(X_cv, y_cv) 
+            preds_model = model.predict_proba(X_train)[:, 1]            
+            predict.append(preds_model)
+
+            model_auc = compute_auc(y_train, preds_model)
+            print "> AUC: %.4f [%s]" % (model_auc, toString(model))
 
 
+        preds = np.hstack(tuple(predict)).reshape(len(predict),len(predict[-1])).transpose()
+        preds[preds>0.9999999]=0.9999999
+        preds[preds<0.0000001]=0.0000001
+        preds = -np.log((1-preds)/preds)
+        modelEN1 = linear_model.LogisticRegression()
+        modelEN1.fit(preds, y_train)
+        print "modelEN1.coef %s" % (modelEN1.coef_)
 
-# === Combine Models === #
-# Do a linear combination using a cross_validated data split
-X_train, X_cv, y_train, y_cv = cross_validation.train_test_split(X, y, test_size=0.5, random_state=SEED)
+        predict = []
+        for model in self.models:
+            model.fit(X_train, y_train) 
+            preds_model = model.predict_proba(X_cv)[:, 1]
+            predict.append(preds_model)  
 
-modelRF.fit(X_cv, y_cv) 
-modelXT.fit(X_cv, y_cv) 
-modelGB.fit(X_cv, y_cv) 
-predsRF = modelRF.predict_proba(X_train)[:, 1]
-predsXT = modelXT.predict_proba(X_train)[:, 1]
-predsGB = modelGB.predict_proba(X_train)[:, 1]
-preds = np.hstack((predsRF, predsXT, predsGB)).reshape(3,len(predsGB)).transpose()
-preds[preds>0.9999999]=0.9999999
-preds[preds<0.0000001]=0.0000001
-preds = -np.log((1-preds)/preds)
-modelEN1 = linear_model.LogisticRegression()
-modelEN1.fit(preds, y_train)
-print modelEN1.coef_
+            model_auc = compute_auc(y_cv, preds_model)
+            print "> AUC: %.4f [%s]" % (model_auc, toString(model))
 
-modelRF.fit(X_train, y_train) 
-modelXT.fit(X_train, y_train) 
-modelGB.fit(X_train, y_train) 
-predsRF = modelRF.predict_proba(X_cv)[:, 1]
-predsXT = modelXT.predict_proba(X_cv)[:, 1]
-predsGB = modelGB.predict_proba(X_cv)[:, 1]
-preds = np.hstack((predsRF, predsXT, predsGB)).reshape(3,len(predsGB)).transpose()
-preds[preds>0.9999999]=0.9999999
-preds[preds<0.0000001]=0.0000001
-preds = -np.log((1-preds)/preds)
-modelEN2 = linear_model.LogisticRegression()
-modelEN2.fit(preds, y_cv)
-print modelEN2.coef_
+            
+        preds = np.hstack(tuple(predict)).reshape(len(predict),len(predict[-1])).transpose()
+        preds[preds>0.9999999]=0.9999999
+        preds[preds<0.0000001]=0.0000001
+        preds = -np.log((1-preds)/preds)
+        modelEN2 = linear_model.LogisticRegression()
+        modelEN2.fit(preds, y_cv)
+        print "modelEN2.coef %s" % (modelEN2.coef_)
 
-coefRF = modelEN1.coef_[0][0] + modelEN2.coef_[0][0]
-coefXT = modelEN1.coef_[0][1] + modelEN2.coef_[0][1]
-coefGB = modelEN1.coef_[0][2] + modelEN2.coef_[0][2]
+        model_coefs = []
+        for index in range(len(modelEN1.coef_[0])):
+            model_coefs.append(modelEN1.coef_[0][index] + modelEN2.coef_[0][index])
+            
+    
+    
 
-# === Predictions === #
-# When making predictions, retrain the model on the whole training set
-modelRF.fit(X, y)
-modelXT.fit(X, y)
-modelGB.fit(X, y)
+        # === Predictions === #
+        # When making predictions, retrain the model on the whole training set
+        predict = []
+        index = 0
+        final_preds = np.zeros((testX.shape[0], ))
+        
+        
+        for model in self.models:
+            model.fit(trainX, trainY)
+            preds_model = model.predict_proba(testX)[:, 1]
+            preds_model[preds_model>0.9999999]=0.9999999
+            preds_model[preds_model<0.0000001]=0.0000001
+            preds_model = -np.log((1-preds_model)/preds_model)
+            predict.append(preds_model)
 
-### Combine here
-predsRF = modelRF.predict_proba(X_test)[:, 1]
-predsXT = modelXT.predict_proba(X_test)[:, 1]
-predsGB = modelGB.predict_proba(X_test)[:, 1]
-predsRF[predsRF>0.9999999]=0.9999999
-predsXT[predsXT>0.9999999]=0.9999999
-predsGB[predsGB>0.9999999]=0.9999999
-predsRF[predsRF<0.0000001]=0.0000001
-predsXT[predsXT<0.0000001]=0.0000001
-predsGB[predsGB<0.0000001]=0.0000001
-predsRF = -np.log((1-predsRF)/predsRF)
-predsXT = -np.log((1-predsXT)/predsXT)
-predsGB = -np.log((1-predsGB)/predsGB)
-preds = coefRF * predsRF + coefXT * predsXT + coefGB * predsGB
+            temp = model_coefs[index] * preds_model
+            final_preds = final_preds + model_coefs[index] * preds_model
 
+            index = index + 1
+
+        mean_auc = compute_auc(testY, final_preds)
+
+        print "> AUC: %.4f " % (mean_auc)
+
+def compute_auc(y, y_pred):
+        fpr, tpr, _ = metrics.roc_curve(y, y_pred)
+        return metrics.auc(fpr, tpr)

@@ -30,10 +30,6 @@ for item in selected_models:
     model.set_params(random_state=SEED)
     models.append(model)
 
-# Set params    
-clf = Stacking.Stacking(models, stack=True, fwls=False,
-                           model_selection=True)
-
 colsToRemove = ['Date', 'INDEX_IBEX']
 colY = 'INDEX_IBEX'
 
@@ -49,23 +45,44 @@ trainDates.append(training_dates.upperIndex)
 testDates.append(testing_dates.lowerIndex)
 testDates.append(testing_dates.upperIndex)
     
-trainX, trainY, testX, testY = ml_dataset.dataset_to_train_using_dates(dataset, dataset_b, trainDates, testDates, colsToRemove, colY, True)
+trainX, trainY, testX, testY = ml_dataset.dataset_to_train_using_dates(dataset, trainDates, testDates, binary=True)
 
+################
+##  Stacking  ##
+################
+clf = Stacking.Stacking(models, stack=True, fwls=False,
+                           model_selection=True)
 
 ###  Metrics
 print("computing cv score")
 mean_auc = 0.0
-for i in range(1):        
+iter_ = 1
+for i in range(iter_):        
     cv_preds = clf.fit_predict(trainY, trainX, testX, testY, show_steps=True)
 
     fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
     roc_auc = metrics.auc(fpr, tpr)
-    print "AUC (fold %d/%d): %.5f" % (i + 1, CONFIG.iter, roc_auc)
+    print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
     mean_auc += roc_auc
 
-#    if CONFIG.diagnostics and i == 0:  # only plot for first fold
-#        logger.info("plotting learning curve")
-#        diagnostics.learning_curve(clf, y, train, cv)
-#        diagnostics.plot_roc(fpr, tpr)
-#if CONFIG.iter:
-#    logger.info("Mean AUC: %.5f",  mean_auc/CONFIG.iter)
+    print "Mean AUC: %.5f" % (mean_auc/CONFIG.iter)
+
+################
+##  Boosting  ##
+################
+
+boosting = Boosting.Boosting(models)
+
+###  Metrics
+print("computing cv score")
+mean_auc = 0.0
+iter_ = 1
+for i in range(iter_):        
+    cv_preds = boosting.fit_predict(trainY, trainX, testX, testY)
+
+    fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
+    roc_auc = metrics.auc(fpr, tpr)
+    print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
+    mean_auc += roc_auc
+
+    print "Mean AUC: %.5f" % (mean_auc/CONFIG.iter)
