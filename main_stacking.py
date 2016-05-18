@@ -33,7 +33,7 @@ for item in selected_models:
 colsToRemove = ['Date', 'INDEX_IBEX']
 colY = 'INDEX_IBEX'
 
-training_dates = Iteration.Iteration('1993-07-07', '2012-07-06')
+training_dates = Iteration.Iteration('1993-08-19', '2012-07-06')
 testing_dates  = Iteration.Iteration('2012-07-09', '2016-04-20')
 training_dates.calculate_indices(dataset)
 testing_dates.calculate_indices(dataset)
@@ -70,19 +70,18 @@ for i in range(iter_):
 ################
 ##  Boosting  ##
 ################
-
+    
 boosting = Boosting.Boosting(models)
 
 ###  Metrics
-print("computing cv score")
 mean_auc = 0.0
 iter_ = 1
 for i in range(iter_):        
-    cv_preds = boosting.fit_predict(trainY, trainX, testX, testY)
+    boosting.fit_predict(trainX, trainY, testX, testY)
 
-    fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
-    roc_auc = metrics.auc(fpr, tpr)
-    print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
-    mean_auc += roc_auc
-
-    print "Mean AUC: %.5f" % (mean_auc/CONFIG.iter)
+    #fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
+    #roc_auc = metrics.auc(fpr, tpr)
+    #print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
+    #mean_auc += roc_auc
+#
+    #print "Mean AUC: %.5f" % (mean_auc/CONFIG.iter)

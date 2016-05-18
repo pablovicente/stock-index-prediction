@@ -16,7 +16,7 @@ INDEX_SP500= procces_stocks.order_dataframe(INDEX_SP500)
 #INDEX_SP500 no need to multiply it
 
 
-min_date = '1993-04-12'
+min_date = '1993-07-07'
 INDEX_DJIA_new = procces_stocks.select_rows_by_actual_date(INDEX_DJIA, min_date)
 INDEX_HSI_new = procces_stocks.select_rows_by_actual_date(INDEX_HSI, min_date)
 INDEX_IBEX_new = procces_stocks.select_rows_by_actual_date(INDEX_IBEX, min_date)
@@ -63,11 +63,13 @@ plt.show()
 GOLD = procces_stocks.order_dataframe(GOLD)
 SILVER = procces_stocks.order_dataframe(SILVER)
 PLAT = procces_stocks.order_dataframe(PLAT)
+OIL_BRENT = procces_stocks.order_dataframe(OIL_BRENT)
 
-min_date = '1993-04-08'
+min_date = '1993-07-07'
 GOLD_new = procces_stocks.select_rows_by_actual_date(GOLD, min_date)
 SILVER_new = procces_stocks.select_rows_by_actual_date(SILVER, min_date)
 PLAT_new = procces_stocks.select_rows_by_actual_date(PLAT, min_date)
+OIL_BRENT_new = procces_stocks.select_rows_by_actual_date(OIL_BRENT, min_date)
 
 cols = ['Date', 'USD (AM)', 'USD (PM)']
 GOLD_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA, GOLD_new, cols)
@@ -75,6 +77,8 @@ cols = ['Date', 'USD']
 SILVER_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA, SILVER_new, cols)
 cols = ['Date', 'USD AM', 'USD PM']
 PLAT_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA, PLAT_new, cols)
+cols = ['Date', 'Value']
+OIL_BRENT_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA, OIL_BRENT_new, cols)
 
 cols = ['USD (AM)', 'USD (PM)']
 GOLD_new = procces_stocks.fill_gaps_with_interpolation(GOLD, GOLD_new, cols, ['linear'], False)
@@ -82,6 +86,8 @@ cols = ['USD']
 SILVER_new = procces_stocks.fill_gaps_with_interpolation(SILVER, SILVER_new, cols, ['linear'], False)
 cols = ['USD AM', 'USD PM']
 PLAT_new = procces_stocks.fill_gaps_with_interpolation(PLAT, PLAT_new, cols, ['linear'], False)
+cols = ['Value']
+OIL_BRENT_new = procces_stocks.fill_gaps_with_interpolation(OIL_BRENT, OIL_BRENT_new, cols, ['linear'], False)
 
 fig_size = [10, 6]
 plt.rcParams["figure.figsize"] = fig_size
