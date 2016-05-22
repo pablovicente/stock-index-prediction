@@ -17,7 +17,8 @@ for item in selected_models:
     model = {'LRC': linear_model.LogisticRegression,
              'GBC': ensemble.GradientBoostingClassifier,
              'RFC': ensemble.RandomForestClassifier,
-             'ETC': ensemble.ExtraTreesClassifier}[model_id]()
+             'ETC': ensemble.ExtraTreesClassifier, 
+             'SVM': svm.SVC}[model_id]()
     model.set_params(random_state=SEED)
     models.append(model)
 
