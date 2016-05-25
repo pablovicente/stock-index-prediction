@@ -4,55 +4,87 @@
 #   STOCK INDICES  #
 ####################
 
+
+GOLD = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/LBMA-GOLD.csv')
+SILVER = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/LBMA-SILVER.csv')
+PLAT = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/LPPM-PLAT.csv')
+OIL_BRENT = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/FRED-DCOILBRENTEU.csv')
+INDEX_DJIA = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/YAHOO-INDEX_DJIA.csv')
+INDEX_HSI = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/YAHOO-INDEX_HSI.csv')
+INDEX_IBEX = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/YAHOO-INDEX_IBEX.csv')
+INDEX_N225 = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/YAHOO-INDEX_N225.csv')
+INDEX_SP500 = data_manipulation.read_csv_data('/Users/Pablo/Desktop/TFM/Raw_Data/YAHOO-INDEX_SP500.csv')
+
+GOLD = GOLD.drop([col for col in GOLD.columns if 'GBP (AM)' in col or 'GBP (PM)' in col or 'EURO (AM)' in col or 'EURO (PM)' in col], axis = 1)
+SILVER = SILVER.drop([col for col in SILVER.columns if 'GPB' in col or 'EURO' in col], axis = 1)
+PLAT = PLAT.drop([col for col in PLAT.columns if 'GBP (AM)' in col or 'GBP (PM)' in col or 'EURO (AM)' in col or 'EURO (PM)' in col], axis = 1)
+INDEX_IBEX = INDEX_IBEX.drop([col for col in INDEX_IBEX.columns if 'Volume' in col], axis = 1)
+INDEX_HSI = INDEX_HSI.drop([col for col in INDEX_HSI.columns if 'Volume' in col], axis = 1)
+INDEX_N225 = INDEX_N225.drop([col for col in INDEX_N225.columns if 'Volume' in col], axis = 1)
+
+GOLD = procces_stocks.order_dataframe(GOLD)
+SILVER = procces_stocks.order_dataframe(SILVER)
+PLAT = procces_stocks.order_dataframe(PLAT)
+OIL_BRENT = procces_stocks.order_dataframe(OIL_BRENT)
 INDEX_DJIA = procces_stocks.order_dataframe(INDEX_DJIA)
-#INDEX_DJIA no need to multiply it
 INDEX_HSI = procces_stocks.order_dataframe(INDEX_HSI)
-#INDEX_HSI no need to multiply it
 INDEX_IBEX = procces_stocks.order_dataframe(INDEX_IBEX)
-#INDEX_IBEX no need to multiply it
 INDEX_N225 = procces_stocks.order_dataframe(INDEX_N225)
-#INDEX_N225 no need to multiply it
 INDEX_SP500= procces_stocks.order_dataframe(INDEX_SP500)
-#INDEX_SP500 no need to multiply it
 
 
 min_date = '1993-07-07'
+min_date = '1993-07-07'
+GOLD_new = procces_stocks.select_rows_by_actual_date(GOLD, min_date)
+SILVER_new = procces_stocks.select_rows_by_actual_date(SILVER, min_date)
+PLAT_new = procces_stocks.select_rows_by_actual_date(PLAT, min_date)
+OIL_BRENT_new = procces_stocks.select_rows_by_actual_date(OIL_BRENT, min_date)
 INDEX_DJIA_new = procces_stocks.select_rows_by_actual_date(INDEX_DJIA, min_date)
 INDEX_HSI_new = procces_stocks.select_rows_by_actual_date(INDEX_HSI, min_date)
 INDEX_IBEX_new = procces_stocks.select_rows_by_actual_date(INDEX_IBEX, min_date)
 INDEX_N225_new = procces_stocks.select_rows_by_actual_date(INDEX_N225, min_date)
 INDEX_SP500_new = procces_stocks.select_rows_by_actual_date(INDEX_SP500, min_date)
 
-cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adjusted Close']
-INDEX_HSI_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_HSI_new)
-INDEX_IBEX_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_IBEX_new)
-INDEX_N225_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_N225_new)
+cols = ['Date', 'USD_AM', 'USD_PM']
+GOLD_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, GOLD_new, cols)
+cols = ['Date', 'USD']
+SILVER_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, SILVER_new, cols)
+cols = ['Date', 'USD_AM', 'USD_PM']
+PLAT_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, PLAT_new, cols)
+cols = ['Date', 'USD']
+OIL_BRENT_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, OIL_BRENT_new, cols)
+cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Adjusted Close']
+INDEX_HSI_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_HSI_new, cols)
+INDEX_IBEX_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_IBEX_new, cols)
+INDEX_N225_new = procces_stocks.align_date_in_dataframe(INDEX_DJIA_new, INDEX_N225_new, cols)
 
-cols = ['Open','High','Low','Close','Volume','Adjusted Close']
-INDEX_HSI_new = fill_gaps_with_interpolation(INDEX_HSI, INDEX_HSI_new, cols, ['linear'], False)
-INDEX_IBEX_new = fill_gaps_with_interpolation(INDEX_IBEX, INDEX_IBEX_new, cols, ['linear'], False)
-INDEX_N225_new = fill_gaps_with_interpolation(INDEX_N225, INDEX_N225_new, cols, ['linear'], False)
+cols = ['USD_AM', 'USD_PM']
+GOLD_new = procces_stocks.fill_gaps_with_interpolation(GOLD, GOLD_new, cols, ['linear'], False)
+cols = ['USD']
+SILVER_new = procces_stocks.fill_gaps_with_interpolation(SILVER, SILVER_new, cols, ['linear'], False)
+cols = ['USD_AM', 'USD_PM']
+PLAT_new = procces_stocks.fill_gaps_with_interpolation(PLAT, PLAT_new, cols, ['linear'], False)
+cols = ['USD']
+OIL_BRENT_new = procces_stocks.fill_gaps_with_interpolation(OIL_BRENT, OIL_BRENT_new, cols, ['linear'], False)
+cols = ['Open','High','Low','Close','Adjusted Close']
+INDEX_HSI_new = procces_stocks.fill_gaps_with_interpolation(INDEX_HSI, INDEX_HSI_new, cols, ['linear'], False)
+INDEX_IBEX_new = procces_stocks.fill_gaps_with_interpolation(INDEX_IBEX, INDEX_IBEX_new, cols, ['linear'], False)
+INDEX_N225_new = procces_stocks.fill_gaps_with_interpolation(INDEX_N225, INDEX_N225_new, cols, ['linear'], False)
 
-cols = ['Volume']
-INDEX_HSI_new = fill_gaps_with_interpolation(INDEX_HSI, INDEX_HSI_new, cols, ['linear'], False, 0.0)
-INDEX_IBEX_new = fill_gaps_with_interpolation(INDEX_IBEX, INDEX_IBEX_new, cols, ['linear'], False, 0.0)
-INDEX_N225_new = fill_gaps_with_interpolation(INDEX_N225, INDEX_N225_new, cols, ['linear'], False, 0.0)
-
-print has_gaps(INDEX_DJIA_new, cols, 0.0)
-print has_gaps(INDEX_SP500_new, cols, 0.0)
-print has_gaps(INDEX_HSI_new, cols, 0.0)
-print has_gaps(INDEX_IBEX_new, cols, 0.0)
-print has_gaps(INDEX_N225_new, cols, 0.0)
-
-# Set figure width to 12 and height to 9
-fig_size = [10, 6]
-plt.rcParams["figure.figsize"] = fig_size
-plt.plot(INDEX_SP500_new['Close'], 'b')
-plt.plot(INDEX_IBEX_new['Close'], 'g')
-plt.plot(INDEX_DJIA_new['Close'], 'r')
-plt.plot(INDEX_HSI_new['Open'], 'y')
-plt.plot(INDEX_N225_new['Open'], 'c')
-plt.show()
+cols = ['USD_AM', 'USD_PM']
+print procces_stocks.has_gaps(GOLD_new, cols, 0.0)
+cols = ['USD']
+print procces_stocks.has_gaps(SILVER_new, cols, 0.0)
+cols = ['USD_AM', 'USD_PM']
+print procces_stocks.has_gaps(PLAT_new, cols, 0.0)
+cols = ['USD']
+print procces_stocks.has_gaps(OIL_BRENT_new, cols, 0.0)
+cols = ['Open','High','Low','Close','Adjusted Close']
+print procces_stocks.has_gaps(INDEX_DJIA_new, cols, 0.0)
+print procces_stocks.has_gaps(INDEX_SP500_new, cols, 0.0)
+print procces_stocks.has_gaps(INDEX_HSI_new, cols, 0.0)
+print procces_stocks.has_gaps(INDEX_IBEX_new, cols, 0.0)
+print procces_stocks.has_gaps(INDEX_N225_new, cols, 0.0)
 
 
 ####################
