@@ -97,7 +97,8 @@ for i in range(0, len(iterations), 2):
     testDates.append(iterations[i+1].lowerIndex)
     testDates.append(iterations[i+1].upperIndex)
     
-    trainX, trainY, testX, testY = ml_dataset.dataset_to_train_using_dates(dataset, dataset_b, trainDates, testDates, colsToRemove, colY, True)
+    trainX, trainY, testX, testY, cols, new_dataset = dataset_to_train_using_dates(dataset, trainDates, testDates, binary=False, shiftFeatures=False, shiftTarget=False)
+    print "%s %s %s %s" % (trainX.shape,trainY.shape,testX.shape,testY.shape)
     
     ## SVM
     scv = svm.SVC(kernel='rbf')
