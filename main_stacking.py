@@ -1,11 +1,14 @@
+
+from classifier_utils import find_params
+
 N_TREES = 500
 SEED = 42
 
 
 selected_models = [
-    "LRC:dataset",    
-    "RFC:dataset",
-    "GBC:dataset",
+    "LRC:all_greedy",    
+    "RFC:all_greedy",
+    "GBC:datall_greedyaset",
     #"RFC:effects_f",  # experimental; added after the competition
 ]
 
@@ -22,6 +25,12 @@ for item in selected_models:
     model.set_params(random_state=SEED)
     models.append(model)
 
+grid_search = False
+## Set params
+for model, feature_set in models:
+    print feature_set
+    model.set_params(**ml.find_params(model, feature_set, y, grid_search))
+
 training_dates = Iteration.Iteration('1993-08-19', '2012-07-06')
 testing_dates  = Iteration.Iteration('2012-07-09', '2016-04-20')
 training_dates.calculate_indices(dataset)
@@ -35,6 +44,7 @@ testDates.append(testing_dates.lowerIndex)
 testDates.append(testing_dates.upperIndex)
     
 trainX, trainY, testX, testY = ml_dataset.dataset_to_train_using_dates(dataset, trainDates, testDates, binary=True)
+
 
 ################
 ##  Stacking  ##
