@@ -4,32 +4,58 @@ from classifier_utils import find_params
 N_TREES = 500
 SEED = 42
 
-
 selected_models = [
-    "LRC:all_greedy",    
-    "RFC:all_greedy",
-    "GBC:datall_greedyaset",
-    #"RFC:effects_f",  # experimental; added after the competition
-]
+    "LRC:all_greedy",   
+    "SGD:all_greedy",
+    
+    "LDA:all_greedy", 
+    "QDA:all_greedy", 
+    
+    "SVM:all_greedy", 
+    
+    "NBG:all_greedy", 
+    "NBM:all_greedy", 
+    "NBB:all_greedy" 
 
+    "KNN:all_greedy", 
+    
+    "ABC:all_greedy",
+    "BGC:all_greedy",
+    "GBC:all_greedy", 
+    "RFC:all_greedy",
+    "ETC:all_greedy"
+]
 
 # Create the models on the fly
 models = []
 for item in selected_models:
     model_id, data_set = item.split(':')
-    model = {'LRC': linear_model.LogisticRegression,
+    model = {'LRC':linear_model.LogisticRegression,
+             'SGD':linear_model.SGDClassifier,
+             
+             'LDA':discriminant_analysis.LinearDiscriminantAnalysis,
+             'QDA':discriminant_analysis.QuadraticDiscriminantAnalysis,
+             
+             'SVM':svm.SVC,
+            
+             'NBG':naive_bayes.GaussianNB,
+             'NBM':naive_bayes.MultinomialNB,
+             'NBB':naive_bayes.BernoulliNB,
+             
+             "KNN":neighbors.KNeighborsClassifier,
+
+             'ABC': ensemble.AdaBoostClassifier,
+             'BGC': ensemble.BaggingClassifier,             
              'GBC': ensemble.GradientBoostingClassifier,
              'RFC': ensemble.RandomForestClassifier,
-             'ETC': ensemble.ExtraTreesClassifier, 
-             'SVM': svm.SVC}[model_id]()
-    model.set_params(random_state=SEED)
+             'ETC': ensemble.ExtraTreesClassifier        
+            }[model_id]()
     models.append(model)
 
-grid_search = False
+grid_search = True
 ## Set params
 for model, feature_set in models:
-    print feature_set
-    model.set_params(**ml.find_params(model, feature_set, y, grid_search))
+    model.set_params(**classifier_utils.find_params(model, feature_set, trainX, trainY, grid_search))
 
 training_dates = Iteration.Iteration('1993-08-19', '2012-07-06')
 testing_dates  = Iteration.Iteration('2012-07-09', '2016-04-20')
