@@ -15,7 +15,7 @@ selected_models = [
     
     "NBG:all_greedy", 
     "NBM:all_greedy", 
-    "NBB:all_greedy" 
+    "NBB:all_greedy",
 
     "KNN:all_greedy", 
     

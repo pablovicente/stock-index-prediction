@@ -1,26 +1,67 @@
 {
+    "ABC:all_greedy": {
+        "learning_rate": 0.08,
+        "n_estimators": 5,
+        "random_state": 42
+    },
+    "BC:all_greedy": {
+        "n_estimators": 10,
+        "n_jobs": -1,
+        "random_state": 42
+    },
+    "BNB:all_greedy": {
+        "alpha": 0.0,
+        "fit_prior": true
+    },
     "ETC:all_greedy": {
         "bootstrap": false,
-        "max_depth": 15,
-        "max_features": 5,
-        "min_samples_leaf": 2,
-        "min_samples_split": 1,
+        "max_depth": 20,
+        "max_features": 1,
+        "min_samples_leaf": 3,
+        "min_samples_split": 5,
         "n_estimators": 500,
         "n_jobs": 1
+    },
+    "GBC:all_greedy": {
+        "learning_rate": 0.05,
+        "max_depth": 13,
+        "max_features": 4,
+        "min_samples_leaf": 1,
+        "min_samples_split": 3,
+        "random_state": 42
+    },
+    "KNC:all_greedy": {
+        "algorithm": "ball_tree",
+        "n_neighbors": 10,
+        "p": 3,
+        "weights": "distance"
     },
     "LR:all_greedy": {
         "C": 1.5,
         "penalty": "l2",
         "random_state": 42
     },
+    "MNB:all_greedy": {
+        "alpha": 1.0,
+        "fit_prior": true
+    },
     "RFC:all_greedy": {
         "bootstrap": false,
-        "max_depth": 15,
-        "max_features": 8,
+        "max_depth": 30,
+        "max_features": 3,
         "min_samples_leaf": 2,
-        "min_samples_split": 5,
+        "min_samples_split": 7,
         "n_estimators": 500,
-        "n_jobs": 1,
+        "n_jobs": -1,
         "random_state": 42
+    },
+    "SVC:all_greedy": {
+        "C": 5,
+        "decision_function_shape": "ovo",
+        "degree": 3,
+        "kernel": "linear",
+        "probability": true,
+        "random_state": 42,
+        "shrinking": false
     }
 }
