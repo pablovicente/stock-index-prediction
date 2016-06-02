@@ -81,16 +81,21 @@ clf = Stacking.Stacking(models, stack=True, fwls=False,
 ###  Metrics
 print("computing cv score")
 mean_auc = 0.0
+mean_accuracy = 0.0
 iter_ = 1
 for i in range(iter_):        
-    cv_preds = clf.fit_predict(trainY, trainX, testX, testY, show_steps=True)
+    cv_preds, models_score, means_score, stacks_score = clf.fit_predict(trainY, trainX, testX, testY, show_steps=True)
 
-    fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
-    roc_auc = metrics.auc(fpr, tpr)
-    print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
-    mean_auc += roc_auc
-
-    print "Mean AUC: %.5f" % (mean_auc/iter_)
+    #fpr, tpr, _ = metrics.roc_curve(testY, cv_preds)
+    #roc_auc = metrics.auc(fpr, tpr)
+    cv_preds_bin = np.round_(cv_preds, decimals=0)
+    accuracy = metrics.accuracy_score(testY, cv_preds_bin)
+    #print "AUC (fold %d/%d): %.5f" % (i + 1, iter_, roc_auc)
+    #mean_auc += roc_auc
+    print "Accuracy (fold %d/%d): %.5f" % (i + 1, iter_, accuracy)
+    mean_accuracy += accuracy
+    #print "Mean AUC: %.5f" % (mean_auc/iter_)
+    print "Mean Accuracy: %.5f" % (mean_accuracy/iter_)   
 
 ################
 ##  Boosting  ##
