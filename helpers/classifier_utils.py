@@ -99,7 +99,7 @@ def compute_auc(y, y_pred):
 
 def compute_subset_auc(indices, pred_set, y):
     subset = [vect for i, vect in enumerate(pred_set) if i in indices]
-    mean_preds = sp.mean(subset, axis=0)
+    mean_preds = sp.mean(subset, axis=0)    
     mean_auc = compute_auc(y, mean_preds)
 
     return mean_auc, indices
@@ -111,9 +111,10 @@ def compute_score(y, y_pred):
 def compute_subset_score(indices, pred_set, y):
     subset = [vect for i, vect in enumerate(pred_set) if i in indices]
     mean_preds = sp.mean(subset, axis=0)
-    mean_auc = compute_score(y, mean_preds)
+    mean_preds = np.round_(mean_preds, decimals=0)
+    mean_score = compute_score(y, mean_preds)
 
-    return mean_auc, indices
+    return mean_score, indices
 
 def convert(data):
     if isinstance(data, basestring):

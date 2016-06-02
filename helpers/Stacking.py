@@ -17,12 +17,13 @@ from classifier_utils import compute_auc, compute_subset_auc, compute_score, com
 class Stacking(object):
     
     def __init__(self, models, generalizer=None, model_selection=True,
-                 stack=False, fwls=False):        
+                 stack=False, fwls=False, log = None):        
         self.models = models
         self.model_selection = model_selection
         self.stack = stack
         self.fwls = fwls
         self.generalizer = linear_model.RidgeCV(alphas=np.linspace(0, 200), cv=100)    
+        self.log = log
 
     def fit_predict(self, y, train=None, predict=None, y_test=None, show_steps=True):
         
@@ -61,9 +62,12 @@ class Stacking(object):
                     fwls_auc = compute_auc(y_test, fwls_preds) \
                         if self.fwls else 0
 
-                    print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc,
-                            mean_auc, stack_auc, fwls_auc,
-                            toString(model, hyperfeatures))
+                    if self.log != None:
+                        print >> self.log, "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
+                    else:
+                        print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc,
+                                mean_auc, stack_auc, fwls_auc,
+                                toString(model, hyperfeatures))
 
                     model_preds_bin, mean_preds_bin, stack_preds_bin = self._binary_preds(model_preds, mean_preds, stack_preds)
                     model_score = compute_score(y_test, model_preds_bin)
@@ -72,10 +76,13 @@ class Stacking(object):
                     models_score.append(model_score)
                     means_score.append(mean_score)
                     stacks_score.append(stack_score)            
-        
-                    print "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score,
-                            mean_score, stack_score,
-                            toString(model, hyperfeatures))
+
+                    if self.log != None:
+                        print >> self.log, "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score, mean_score, stack_score, toString(model, hyperfeatures))
+                    else:
+                        print "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score,
+                                mean_score, stack_score,
+                                toString(model, hyperfeatures))
 
         if self.model_selection and predict is not None:
 
@@ -183,37 +190,44 @@ class Stacking(object):
             combination_results = pool.map(partial_compute_subset_auc, cb)
             best_subset_auc, best_subset_indices = max(
                 combination_results, key=itemgetter(0))
-            print "- best subset auc (%d models): %.4f > %s" % (
+            if self.log != None:
+                print >> self.log, "- best subset auc (%d models): %.4f > %s" % (
+                n, best_subset_auc, list(best_subset_indices))
+            else:
+                print "- best subset auc (%d models): %.4f > %s" % (
                 n, best_subset_auc, list(best_subset_indices))
             if best_subset_auc > best_auc:
                 best_auc = best_subset_auc
                 best_n = n
                 best_indices = list(best_subset_indices)
         pool.terminate()
+        
+        if self.log != None:                    
+            print >> self.log, "best auc: %.4f" % (best_auc)
+            print >> self.log, "best n: %d" % (best_n)
+            print >> self.log, "best indices: %s" % (best_indices)
+        else:
+            print "best auc: %.4f" % (best_auc)
+            print "best n: %d" % (best_n)
+            print "best indices: %s" % (best_indices)
 
-        print "best auc: %.4f" % (best_auc)
-        print "best n: %d" % (best_n)
-        print "best indices: %s" % (best_indices)
         for i, (model, feature_set) in enumerate(self.models):
             if i in best_subset_indices:
-                print "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
+                if self.log != None:                    
+                    print >> self.log, "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
+                else:
+                    print "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
 
         return best_subset_indices
     
-    def _find_best_score_subset(self, y, predictions_list_old):
+    def _find_best_score_subset(self, y, predictions_list):
         """
         Finds the combination of models that produce the best accuracy.
         """
-
-        predictions_list = []
-
-        for i in range(len(predictions_list_old)):
-            predictions_list.append(np.round_(predictions_list_old[i], decimals=0))
-
+        
         best_subset_indices = range(len(predictions_list))
         pool = multiprocessing.Pool(processes=4)
-
-        partial_compute_subset_auc = partial(compute_subset_score,
+        partial_compute_subset_score = partial(compute_subset_score,
                                              pred_set=predictions_list, y=y)
 
         best_auc = 0
@@ -221,14 +235,18 @@ class Stacking(object):
         best_indices = []
 
         if len(predictions_list) == 1:
-            return [1]
+            return [1]    
 
         for n in range(int(len(predictions_list)/2), len(predictions_list)):
             cb = itertools.combinations(range(len(predictions_list)), n)
-            combination_results = pool.map(partial_compute_subset_auc, cb)
+            combination_results = pool.map(partial_compute_subset_score, cb)
             best_subset_auc, best_subset_indices = max(
                 combination_results, key=itemgetter(0))
-            print "- best subset auc (%d models): %.4f > %s" % (
+            if self.log != None:
+                print >> self.log, "- best subset score (%d models): %.4f > %s" % (
+                n, best_subset_auc, list(best_subset_indices))
+            else:
+                print "- best subset score (%d models): %.4f > %s" % (
                 n, best_subset_auc, list(best_subset_indices))
             if best_subset_auc > best_auc:
                 best_auc = best_subset_auc
@@ -236,12 +254,22 @@ class Stacking(object):
                 best_indices = list(best_subset_indices)
         pool.terminate()
 
-        print "best auc: %.4f" % (best_auc)
-        print "best n: %d" % (best_n)
-        print "best indices: %s" % (best_indices)
+        if self.log != None:                    
+            print >> self.log, "best score: %.4f" % (best_auc)
+            print >> self.log, "best n: %d" % (best_n)
+            print >> self.log, "best indices: %s" % (best_indices)
+        else:
+            print "best score: %.4f" % (best_auc)
+            print "best n: %d" % (best_n)
+            print "best indices: %s" % (best_indices)
+
         for i, (model, feature_set) in enumerate(self.models):
             if i in best_subset_indices:
-                print "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
+                if self.log != None:                    
+                    print >> self.log, "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
+                else:
+                    print "> model: %s (%s)" % (model.__class__.__name__, feature_set)        
+     
 
         return best_subset_indices
 
