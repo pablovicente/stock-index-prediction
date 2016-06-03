@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
+import math
 import calendar
 import numpy as np
 import pandas as pd
+
 from datetime import datetime
-import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+
+import matplotlib.pyplot as plt
 import statsmodels.tsa.stattools as stats
 import statsmodels.tsa.stattools as stats
 
@@ -61,7 +64,7 @@ def align_date_in_dataframe(df1, df2, cols):
     
     if check_dataframes_alignment(df1, df2) == True:
         print "Dataframes already aligned"
-        return     
+        return df2     
     
     values = df2.Date.isin(df1.Date)
     for i in range(len(values)): 
@@ -170,12 +173,15 @@ def difference_between_consecutive_days(df, colnames, shift_values):
     return df
 
 
-def log_return(df, init_col, end_col):
+def log_return(df, colnames, shift_values):
     """
         
-        """
-    df.loc[:,('Log_Return')] = df[init_col]/df[end_col]
-    df.loc[:,('Log_Return')] = df.loc[:,('Log_Return')].apply(lambda x: math.log(x))
+    """
+    for shift_value in shift_values:
+        for colname in colnames:
+            num = "Log_Return_" + str(shift_value) + "_" + colname
+            df.loc[:,(num)] = df[colname]/df[colname].shift(shift_value)    
+            df.loc[:,(num)] = df.loc[:,(num)].apply(lambda x: math.log(x))    
     
     return df
 

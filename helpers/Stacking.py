@@ -11,7 +11,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn import cross_validation, linear_model
 
 from utils import toString
-from classifier_utils import compute_auc, compute_subset_auc, compute_score, compute_subset_score
+from classifier_utils import compute_auc, compute_subset_auc, compute_score, compute_subset_score, compute_f1_score
 
 
 class Stacking(object):
@@ -28,10 +28,15 @@ class Stacking(object):
     def fit_predict(self, y, train=None, predict=None, y_test=None, show_steps=True):
         
         stage0_train = []
-        stage0_predict = []    
+        stage0_predict = [] 
+
         models_score = []
         means_score = []
         stacks_score = []
+
+        models_f1 = []
+        means_f1 = []
+        stacks_f1 = []
 
         y_train = y
         X_train = train
@@ -65,24 +70,36 @@ class Stacking(object):
                     if self.log != None:
                         print >> self.log, "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
                     else:
-                        print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc,
-                                mean_auc, stack_auc, fwls_auc,
-                                toString(model, hyperfeatures))
+                        print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
 
                     model_preds_bin, mean_preds_bin, stack_preds_bin = self._binary_preds(model_preds, mean_preds, stack_preds)
                     model_score = compute_score(y_test, model_preds_bin)
                     mean_score = compute_score(y_test, mean_preds_bin)
-                    stack_score = compute_score(y_test, stack_preds_bin)
+                    stack_score = compute_score(y_test, stack_preds_bin) \
+                        if self.stack else 0
                     models_score.append(model_score)
                     means_score.append(mean_score)
-                    stacks_score.append(stack_score)            
+                    stacks_score.append(stack_score) \
+                        if self.stack else 0            
 
                     if self.log != None:
                         print >> self.log, "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score, mean_score, stack_score, toString(model, hyperfeatures))
                     else:
-                        print "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score,
-                                mean_score, stack_score,
-                                toString(model, hyperfeatures))
+                        print "> Score: %.4f (%.4f, %.4f) [%s]" % (model_score, mean_score, stack_score, toString(model, hyperfeatures))
+                
+                    model_f1 = compute_f1_score(y_test, model_preds_bin)
+                    mean_f1 = compute_f1_score(y_test, mean_preds_bin)
+                    stack_f1 = compute_f1_score(y_test, stack_preds_bin) \
+                        if self.stack else 0
+                    models_f1.append(model_f1)
+                    means_f1.append(mean_f1)
+                    stacks_f1.append(stack_f1) \
+                        if self.stack else 0
+
+                    if self.log != None:
+                        print >> self.log, "> F1: %.4f (%.4f, %.4f) [%s]" % (model_f1, mean_f1, stack_f1, toString(model, hyperfeatures))
+                    else:
+                        print "> F1: %.4f (%.4f, %.4f) [%s]" % (model_f1, mean_f1, stack_f1, toString(model, hyperfeatures))            
 
         if self.model_selection and predict is not None:
 
@@ -104,7 +121,7 @@ class Stacking(object):
         else:
             selected_preds = mean_preds
 
-        return selected_preds, models_score, means_score, stacks_score
+        return selected_preds, models_score, models_f1
 
     def _get_model_preds(self, model, X_train, X_predict, y_train):
         """        
@@ -276,10 +293,11 @@ class Stacking(object):
     def _binary_preds(self, model_preds, mean_preds, stack_preds):
         """
         """
-
+        stack_preds_bin = []
         model_preds_bin = np.round_(model_preds, decimals=0)
         mean_preds_bin = np.round_(mean_preds, decimals=0)
-        stack_preds_bin = np.round_(stack_preds, decimals=0)
-        
+        stack_preds_bin = np.round_(stack_preds, decimals=0) \
+                        if self.stack else 0
+                
         return model_preds_bin, mean_preds_bin, stack_preds_bin
         

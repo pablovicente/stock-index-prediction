@@ -172,7 +172,6 @@ def dataset_to_train_using_dates(dataset, trainDates, testDates, predicting = 'c
         
     #dataset = remove_columns_from_dataset(dataset, predicting = predicting, shifted = shiftFeatures)
     #dataset = dataset[['GOLD_RD_B1_USD_AM','SILVER_RD_B1_USD','PLAT_RD_B1_USD_AM','OIL_BRENT_RD_B1_USD','DJIA_RD_B1_Open','HSI_RD_B1_Open','IBEX_RD_B1_Open','IBEX_RD_B1_Close','N225_RD_B1_Open','SP500_RD_B1_Open']]
-    dataset = dataset[[col for col in dataset.columns if '_B' in col and 'Open' in col or 'IBEX_RD_B1_Close' in col]]
     ###########################
     # predicting close price: #
     ###########################    

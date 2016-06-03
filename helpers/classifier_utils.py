@@ -3,7 +3,7 @@ import collections
 import scipy as sp
 import numpy as np
 
-from sklearn.metrics import roc_curve, auc, accuracy_score
+from sklearn.metrics import roc_curve, auc, accuracy_score, f1_score
 from sklearn.grid_search import GridSearchCV
 
 from utils import toString
@@ -24,7 +24,7 @@ INITIAL_PARAMS = {
         'random_state': SEED, 'n_jobs':-1,
     },
     'GradientBoostingClassifier': {
-        'learning_rate': .08, 'max_features': 7,
+        'learning_rate': .08, 'max_features': 7, 
         'min_samples_leaf': 1, 'min_samples_split': 3, 'max_depth': 5,
         'random_state': SEED
     },
@@ -84,7 +84,6 @@ PARAM_GRID = {
         'max_features': [3, 8, 11, 15],
     },
     'ExtraTreesClassifier': {'min_samples_leaf': [2, 3],
-                             'n_jobs': [1],
                              'min_samples_split': [1, 2, 5],
                              'bootstrap': [False],
                              'max_depth': [15, 20, 25, 30],
@@ -94,8 +93,9 @@ PARAM_GRID = {
 
 
 def compute_auc(y, y_pred):
-        fpr, tpr, _ = roc_curve(y, y_pred)
-        return auc(fpr, tpr)
+
+    fpr, tpr, _ = roc_curve(y, y_pred)
+    return auc(fpr, tpr)
 
 def compute_subset_auc(indices, pred_set, y):
     subset = [vect for i, vect in enumerate(pred_set) if i in indices]
@@ -116,6 +116,11 @@ def compute_subset_score(indices, pred_set, y):
 
     return mean_score, indices
 
+def compute_f1_score(y, y_pred):
+    
+    f1 = f1_score(y, y_pred)
+    return f1
+    
 def convert(data):
     if isinstance(data, basestring):
         return str(data)
