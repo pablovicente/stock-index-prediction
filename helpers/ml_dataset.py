@@ -180,10 +180,10 @@ def dataset_to_train_using_dates(dataset, trainDates, testDates, predicting = 'c
 
     if predicting == 'close': 
         colY = 'IBEX_RD_B1_Close'
-        colsToRemove = ['IBEX_RD_B1_Close']
+        colsToRemove = ['Date', 'IBEX_RD_B1_Close']
     if predicting == 'open': 
         colY = 'IBEX_RD_B1_Open'
-        colsToRemove = ['IBEX_RD_B1_Close', 'IBEX_RD_B1_Open']
+        colsToRemove = ['Date', 'IBEX_RD_B1_Close', 'IBEX_RD_B1_Open']
 
     train_df = dataset.iloc[trainDates[0]:trainDates[1]+1,]    
     test_df = dataset.iloc[testDates[0]:testDates[1]+1,]

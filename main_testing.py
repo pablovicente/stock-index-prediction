@@ -420,9 +420,9 @@ for i in range(0, len(iterations), 2):
 #                                           Type 6                                                 #
 ####################################################################################################
 
-trainingPeriodList = [365, 365*2,365*3]
-testingPeriodList = [1,5,30,40, 50, 365]
-stepList = [100, 200, 300, 400]
+trainingPeriodList = [(365,'365'), (365*2,'730'),(365*3,,'730')]
+testingPeriodList = [(1, '1'),(5, '5'),(30, '30'),(40, '40'), (50, '50'), (365, '365')]
+stepList = [(100, '100'), (200, '200'), (300, '300'), (400, '400')]
 
 for trainingPeriod in trainingPeriodList:
     for testingPeriod in testingPeriodList:
@@ -469,9 +469,9 @@ for trainingPeriod in trainingPeriodList:
 #                                           Type 7                                                 #
 ####################################################################################################
 
-trainingPeriodList = [365, 365*2,365*3]
-testingPeriodList = [1,5,10,30,40,40]
-stepList = [100, 200, 300, 400]
+trainingPeriodList = [(365,'365'), (365*2,'730'),(365*3,,'730')]
+testingPeriodList = [(1, '1'),(5, '5'),(30, '30'),(40, '40'), (50, '50'), (365, '365')]
+stepList = [(100, '100'), (200, '200'), (300, '300'), (400, '400')]
 
 for trainingPeriod in trainingPeriodList:
     for testingPeriod in testingPeriodList:

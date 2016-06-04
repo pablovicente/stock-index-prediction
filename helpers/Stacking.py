@@ -25,7 +25,21 @@ class Stacking(object):
         self.generalizer = linear_model.RidgeCV(alphas=np.linspace(0, 200), cv=100)    
         self.log = log
 
-    def fit_predict(self, y, train=None, predict=None, y_test=None, show_steps=True):
+    def fit(self, y, train):
+
+        y_train = y
+        X_train = train
+
+        for model, hyperfeatures in self.models:
+            if self.log != None:
+                        print >> self.log, "Fitting [%s]" % (toString(model, hyperfeatures))
+            else:
+                print "Fitting [%s]"  % (toString(model, hyperfeatures))
+
+            model_preds = model.fit(X_train, y_train)
+            
+
+    def predict(self, y, train, predict, y_test, show_steps=True):
         
         stage0_train = []
         stage0_predict = [] 
@@ -44,7 +58,7 @@ class Stacking(object):
 
         for model, hyperfeatures in self.models:
 
-            model_preds = self._get_model_preds(model, X_train, X_predict, y_train)
+            model_preds = self._get_model_preds(model, X_predict)
             model_score = self._get_model_score(model, X_predict, y_test)             
             stage0_predict.append(model_preds)
         
@@ -123,20 +137,17 @@ class Stacking(object):
 
         return selected_preds, models_score, models_f1
 
-    def _get_model_preds(self, model, X_train, X_predict, y_train):
+    def _get_model_preds(self, model, X_predict):
         """        
         
-        """
-
-        model.fit(X_train, y_train)
-        model_preds = model.predict_proba(X_predict)[:, 1]
-                       
+        """        
+        model_preds = model.predict_proba(X_predict)[:, 1]                    
         return model_preds
+
     def _get_model_score(self, model, X_predict, y_test):
         """
         """
         score = model.score(X_predict, y_test)
-
         return score
 
     def _get_model_cv_preds(self, model, X_train, y_train):
