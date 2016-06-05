@@ -74,17 +74,17 @@ class Stacking(object):
                         y_train, train, predict,
                         stack=self.stack, fwls=self.fwls)
 
-                    model_auc = compute_auc(y_test, stage0_predict[-1])
-                    mean_auc = compute_auc(y_test, mean_preds)
-                    stack_auc = compute_auc(y_test, stack_preds) \
-                        if self.stack else 0
-                    fwls_auc = compute_auc(y_test, fwls_preds) \
-                        if self.fwls else 0
-
-                    if self.log != None:
-                        print >> self.log, "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
-                    else:
-                        print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
+                    #model_auc = compute_auc(y_test, stage0_predict[-1])
+                    #mean_auc = compute_auc(y_test, mean_preds)
+                    #stack_auc = compute_auc(y_test, stack_preds) \
+                    #    if self.stack else 0
+                    #fwls_auc = compute_auc(y_test, fwls_preds) \
+                    #    if self.fwls else 0
+                    #
+                    #if self.log != None:
+                    #    print >> self.log, "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
+                    #else:
+                    #    print "> AUC: %.4f (%.4f, %.4f, %.4f) [%s]" % (model_auc, mean_auc, stack_auc, fwls_auc, toString(model, hyperfeatures))
 
                     model_preds_bin, mean_preds_bin, stack_preds_bin = self._binary_preds(model_preds, mean_preds, stack_preds)
                     model_score = compute_score(y_test, model_preds_bin)

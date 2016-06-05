@@ -290,3 +290,42 @@ def train_arrays_experiments(df_x, df_y, trainDates, testDates):
     testY = np.nan_to_num(np.asarray(test_df_y))
     
     return trainX, trainY, testX, testY
+
+
+
+def only_train_array(df_x, df_y, trainDates):
+    """
+    
+    Parameter
+    ---------------------
+    - dataset: dataframe containing all available columns for a set of dates
+    - trainDates: list containing the start training day and end training day
+    - testDates: list containing the start training day and end testing day
+
+    """
+    train_df_x = df_x.iloc[trainDates[0]:trainDates[1],]    
+    train_df_y = df_y.iloc[trainDates[0]:trainDates[1],]      
+
+    trainX = np.nan_to_num(np.asarray(train_df_x))
+    trainY = np.nan_to_num(np.asarray(train_df_y))    
+    
+    return trainX, trainY
+
+def only_test_array(df_x, df_y, testDates):
+    """
+    
+    Parameter
+    ---------------------
+    - dataset: dataframe containing all available columns for a set of dates
+    - trainDates: list containing the start training day and end training day
+    - testDates: list containing the start training day and end testing day
+
+    """
+
+    test_df_x  = df_x.iloc[testDates[0]:testDates[1],]    
+    test_df_y  = df_y.iloc[testDates[0]:testDates[1],]
+
+    testX = np.nan_to_num(np.asarray(test_df_x))
+    testY = np.nan_to_num(np.asarray(test_df_y))
+    
+    return testX, testY
