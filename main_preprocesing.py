@@ -130,7 +130,7 @@ INDEX_FCHI_new  = procces_stocks.fill_gaps_with_interpolation(INDEX_FCHI, INDEX_
 INDEX_GDAXI_new = procces_stocks.fill_gaps_with_interpolation(INDEX_GDAXI, INDEX_GDAXI_new, cols, ['linear'], False)
 
 ##############################
-#        DELETE COLS         #
+#        CHECK GAPS         #
 ##############################
 
 cols = ['USD']
@@ -153,3 +153,49 @@ print procces_stocks.has_gaps(INDEX_N225_new, cols, 0.0)
 print procces_stocks.has_gaps(INDEX_AXJO_new, cols, 0.0)
 print procces_stocks.has_gaps(INDEX_FCHI_new, cols, 0.0)
 print procces_stocks.has_gaps(INDEX_GDAXI_new, cols, 0.0)
+
+
+##############################
+#        CREATE COLS         #
+##############################
+
+shift_values = [1,2,3,5,10,20,30,50]
+values_dfs = [GOLD_new, SILVER_new, PLAT_new, OIL_BRENT_new]
+colnames = ['USD']
+for df in values_dfs:
+    df = procces_stocks.difference_between_consecutive_days(df, colnames, shift_values)
+    df = procces_stocks.log_return(df, colnames, shift_values)
+
+values_dfs = [USD_GBP_new, JPY_USD_new, AUD_USD_new]
+colnames = ['Value']
+for df in values_dfs:
+    df = procces_stocks.difference_between_consecutive_days(df, colnames, shift_values)
+    df = procces_stocks.log_return(df, colnames, shift_values)
+
+values_dfs = [INDEX_DJIA_new, INDEX_HSI_new, INDEX_IBEX_new, INDEX_N225_new, INDEX_SP500_new, INDEX_AXJO_new, INDEX_FCHI_new, INDEX_GDAXI_new]
+colnames = ['Open', 'Close', 'High', 'Low']
+for df in values_dfs:
+    df = procces_stocks.difference_between_consecutive_days(df, colnames, shift_values)
+    df = procces_stocks.log_return(df, colnames, shift_values)
+
+##############################
+#          SAVE DATA         #
+##############################
+
+data_manipulation.write_csv_data(GOLD_new, '/Users/Pablo/Desktop/TFM/Data/GOLD.csv')
+data_manipulation.write_csv_data(SILVER_new, '/Users/Pablo/Desktop/TFM/Data/SILVER.csv')
+data_manipulation.write_csv_data(PLAT_new, '/Users/Pablo/Desktop/TFM/Data/PLAT.csv')
+data_manipulation.write_csv_data(OIL_BRENT_new, '/Users/Pablo/Desktop/TFM/Data/OIL_BRENT.csv')
+
+data_manipulation.write_csv_data(USD_GBP_new, '/Users/Pablo/Desktop/TFM/Data/USD_GBP.csv')
+data_manipulation.write_csv_data(JPY_USD_new, '/Users/Pablo/Desktop/TFM/Data/JPY_USD.csv')
+data_manipulation.write_csv_data(AUD_USD_new, '/Users/Pablo/Desktop/TFM/Data/AUD_USD.csv')
+
+data_manipulation.write_csv_data(INDEX_DJIA_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_DJIA.csv')
+data_manipulation.write_csv_data(INDEX_HSI_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_HSI.csv')
+data_manipulation.write_csv_data(INDEX_IBEX_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_IBEX.csv')
+data_manipulation.write_csv_data(INDEX_N225_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_N225.csv')
+data_manipulation.write_csv_data(INDEX_SP500_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_SP500.csv')
+data_manipulation.write_csv_data(INDEX_AXJO_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_AXJO.csv')
+data_manipulation.write_csv_data(INDEX_FCHI_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_FCHI.csv')
+data_manipulation.write_csv_data(INDEX_GDAXI_new, '/Users/Pablo/Desktop/TFM/Data/INDEX_GDAXI.csv')

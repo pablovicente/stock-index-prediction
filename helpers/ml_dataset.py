@@ -247,6 +247,22 @@ def train_arrays_experiments(df_x, df_y, trainDates, testDates):
     
     return trainX, trainY, testX, testY
 
+def np_train_arrays_experiments(df_x, df_y, trainDates, testDates):
+    """
+    
+    Parameter
+    ---------------------
+    - dataset: dataframe containing all available columns for a set of dates
+    - trainDates: list containing the start training day and end training day
+    - testDates: list containing the start training day and end testing day
+
+    """
+    train_x = df_x[trainDates[0]:trainDates[1]+1,]    
+    train_y = df_y[trainDates[0]:trainDates[1]+1,]    
+    test_x  = df_x[testDates[0]:testDates[1]+1,]    
+    test_y  = df_y[testDates[0]:testDates[1]+1,]
+    
+    return train_x, train_y, test_x, test_y
 
 
 def only_train_array(df_x, df_y, trainDates):
