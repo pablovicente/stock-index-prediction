@@ -221,50 +221,6 @@ def dataset_to_train_using_dates(dataset, trainDates, testDates, predicting = 'c
 
     return trainX, trainY, testX, testY, columns_names
 
-def feature_importance(trainX, trainY, testX, testY, columns):
-    """
-        Calculates the feature importance on the training set for a given set of variables
-        It prints this importance and plots it
-        """
-    
-    ## Feature selection
-    clf = ensemble.ExtraTreesClassifier(random_state=1729, n_estimators=250, n_jobs=-1)
-    selector = clf.fit(trainX, trainY)
-    importances = clf.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in clf.estimators_], axis=0)
-    indices = np.argsort(importances)[::-1]
-    
-    # Print the feature ranking
-    print("Feature ranking:")
-    
-    for f in range(trainX.shape[1]):
-        print("%d. %s (%f)" % (f + 1, columns[indices[f]], importances[indices[f]]))
-    
-    # Plot the feature importances of the forest
-    plt.figure()
-    plt.title("Feature importances")
-    plt.bar(range(trainX.shape[1]), importances[indices],
-            color="r", yerr=std[indices], align="center")
-    plt.xticks(range(trainX.shape[1]), indices)
-    plt.xlim([-1, trainX.shape[1]])
-    plt.show()
-
-
-def feature_selection_trees(trainX, trainY, testX, testY):   
-    """
-    Calculate the feature importance and select the most importance features
-    It return the filtered training and testing sets
-    """
-    ## Feature selection
-    clf = ensemble.ExtraTreesClassifier(random_state=1729, n_estimators=250, n_jobs=-1)
-    selector = clf.fit(trainX, trainY)
-
-    fs = feature_selection.SelectFromModel(selector, prefit=True)
-    trainX = fs.transform(trainX)
-    testX = fs.transform(testX)
-
-    return trainX, testX
-
 
 
 def train_arrays_experiments(df_x, df_y, trainDates, testDates):

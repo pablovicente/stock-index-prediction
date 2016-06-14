@@ -8,7 +8,9 @@ from mpl_toolkits.mplot3d import Axes3D
 
 import statsmodels.tsa.stattools as stats
 
+from sklearn import ensemble
 from sklearn import decomposition
+from sklearn import feature_selection
 
 def autocorrelation_numpy(time_series):
 
@@ -68,31 +70,47 @@ def pca_plot(X_r, trainY, target_names, elev=-40, azim=-80):
     plt.savefig('/Users/Pablo/Desktop/figure2.png')
 
 
-def forest_importance(X, y, colums, verbose=True, plot=True):
-    """
-    Build a forest and compute the feature importances
-    """
 
-    forest = ensemble.ExtraTreesClassifier(n_estimators=250, random_state=0)
-
-    forest.fit(X, y)
-    importances = forest.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in forest.estimators_],
-                 axis=0)
+def feature_importance(trainX, trainY, testX, testY, columns):
+    """
+        Calculates the feature importance on the training set for a given set of variables
+        It prints this importance and plots it
+        """
+    
+    ## Feature selection
+    clf = ensemble.ExtraTreesClassifier(random_state=1729, n_estimators=250, n_jobs=-1)
+    selector = clf.fit(trainX, trainY)
+    importances = clf.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in clf.estimators_], axis=0)
     indices = np.argsort(importances)[::-1]
-
+    
     # Print the feature ranking
-    if verbose:
-        print("Feature ranking:")
-
-        for f in range(X.shape[1]):
-            print("%d. feature %s (%f)" % (f + 1, colums[indices[f]], importances[indices[f]]))
-
+    print("Feature ranking:")
+    
+    for f in range(trainX.shape[1]):
+        print("%d. %s (%f)" % (f + 1, columns[indices[f]], importances[indices[f]]))
+    
     # Plot the feature importances of the forest
-    if plot:
-        plt.figure()
-        plt.title("Feature importances")
-        plt.bar(range(X.shape[1]), importances[indices], color="r", yerr=std[indices], align="center")
-        plt.xticks(range(X.shape[1]), indices)
-        plt.xlim([-1, X.shape[1]])
-        plt.show()
+    plt.figure()
+    plt.title("Feature importances")
+    plt.bar(range(trainX.shape[1]), importances[indices],
+            color="r", yerr=std[indices], align="center")
+    plt.xticks(range(trainX.shape[1]), indices)
+    plt.xlim([-1, trainX.shape[1]])
+    plt.show()
+
+
+def feature_selection_trees(trainX, trainY, testX, testY):   
+    """
+    Calculate the feature importance and select the most importance features
+    It return the filtered training and testing sets
+    """
+    ## Feature selection
+    clf = ensemble.ExtraTreesClassifier(random_state=1729, n_estimators=250, n_jobs=-1)
+    selector = clf.fit(trainX, trainY)
+
+    fs = feature_selection.SelectFromModel(selector, prefit=True)
+    trainX = fs.transform(trainX)
+    testX = fs.transform(testX)
+
+    return trainX, testX
