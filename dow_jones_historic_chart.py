@@ -75,3 +75,40 @@ sb.barplot(x="Date", y="Values", data=df_dataset, palette="Greens")
 
 # Draw a nested barplot to show survival for class and sex
 #g = sb.factorplot(x="class", y="survived", hue="sex", data=titanic, size=6, kind="bar", palette="muted")
+
+d = {'Neuronas': [5, 10, 20, 50, 100], 'Accuracy': [53.90, 53.14, 50.66, 50.47, 52.57]}
+df_dataset = pd.DataFrame(data=d)
+
+
+fig_size = [14, 8]
+plt.rcParams["figure.figsize"] = fig_size
+sb.set_style('whitegrid')
+fig = pylab.figure(0)
+##g = sb.factorplot(x="Date", y="Values", data=df_dataset, size=6, kind="bar", palette="muted")
+sb.barplot(x="Neuronas", y="Accuracy", data=df_dataset, color="#3A5BA1")
+fig.savefig('/Users/Pablo/Desktop/figure.png')
+
+
+
+N = 5
+model1 = (312.15, -1566.62, -721.42, 676.37)
+model2 = (-18.54, -1193.91, 251.97, -485.60)
+model3 = (809.49, 100.43, -408.49, 619.35)
+
+ind = np.arange(4)  # the x locations for the groups
+width = 0.3       # the width of the bars
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(ind, model1, width, color='#A6474C')
+rects2 = ax.bar(ind + width, model2, width, color='#465F95')
+rects3 = ax.bar(ind + 2*width, model3, width, color='#4D9058')
+
+
+# add some text for labels, title and axes ticks
+ax.set_ylabel('Retornos ($)')
+ax.set_title('Retornos de cada modelo')
+ax.set_xticks(ind + 0.45)
+ax.set_xticklabels(('Perido 1', 'Perido 2', 'Perido 3', 'Perido 4'))
+ax.xaxis.grid(False)
+
+ax.legend((rects1[0], rects2[0], rects3[0]), ('Modelo 1', 'Modelo 2', 'Modelo 3'))
