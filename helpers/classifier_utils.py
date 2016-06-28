@@ -1,3 +1,10 @@
+"""
+classifier_utils.py
+
+Original author: Pablo Vicente 
+"""
+
+
 import json
 import collections
 import scipy as sp

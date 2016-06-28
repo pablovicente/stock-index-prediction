@@ -1,4 +1,8 @@
-#!/usr/bin/python
+"""
+data_manipulation.py
+
+Original author: Pablo Vicente 
+"""
 
 
 import pandas as pd

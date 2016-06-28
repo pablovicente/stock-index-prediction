@@ -1,3 +1,9 @@
+"""
+report_generator.py
+
+Original author: Pablo Vicente 
+"""
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image,Table, TableStyle, PageBreak

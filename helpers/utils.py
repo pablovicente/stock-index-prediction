@@ -1,3 +1,8 @@
+"""
+utils.py
+
+Original author: Pablo Vicente 
+"""
 
 from re import sub
 

@@ -1,8 +1,8 @@
 """
-Se parte de un conjunto de training y otro de testing.
-El conjunto de training es subdividido X_train y X_cv
-Se entrenan los clasificadores sobre cada una de las partes y posteriormente 
-se entrenan sobre todo el conjunto de testing
+Boosting.py
+
+Original author: Benjamin Solecki <bensolecki@gmail.com>
+Modified by: Pablo Vicente 
 """
 
 import numpy as np

@@ -1,4 +1,9 @@
-#!/usr/bin/python
+"""
+Iteration.py
+
+Original author: Pablo Vicente 
+"""
+
 
 class Iteration(object):
     

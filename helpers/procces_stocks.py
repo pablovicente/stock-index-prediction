@@ -1,4 +1,8 @@
-#!/usr/bin/python
+"""
+process_stocks.py
+
+Original author: Pablo Vicente 
+"""
 
 import math
 import calendar

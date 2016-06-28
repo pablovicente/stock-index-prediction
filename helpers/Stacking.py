@@ -1,3 +1,10 @@
+"""
+Stacking.py
+
+Original author: Paul Duan <email@paulduan.com>
+Modified by: Pablo Vicente 
+"""
+
 import scipy as sp
 import numpy as np
 import multiprocessing

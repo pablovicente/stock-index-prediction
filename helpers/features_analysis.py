@@ -1,3 +1,8 @@
+"""
+features_analysis.py
+
+Original author: Pablo Vicente 
+"""
 
 
 import numpy as np
