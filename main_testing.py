@@ -11,7 +11,7 @@ Performs different types of testing on the time series.
 4 -  three years periods |   one year periods
 5 -  three years periods |   one year periods
 6 -  three years periods |   one year periods
-7 -  three years periods |   one year periodsx
+7 -  three years periods |   one year periods
 
 """
 

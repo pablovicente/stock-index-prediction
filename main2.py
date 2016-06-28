@@ -1,3 +1,7 @@
+####################################################################################################
+#                                Main Types 1 to 5                                                 #
+####################################################################################################
+
 import six
 import math
 import time
@@ -109,7 +113,7 @@ selected_models = [
     "LDA:all_greedy",
     "QDA:all_greedy",
    
-#    "SVM:all_greedy",
+    "SVM:all_greedy",
    
     "NBG:all_greedy",
     "NBB:all_greedy",
@@ -151,35 +155,35 @@ for item in selected_models:
     models.append((model, data_set))
     algorithms_list.append(model_id)
 
-
-grid_search = True
-## Set params
-for model, feature_set in models:
-    model.set_params(**classifier_utils.find_params(model, feature_set, trainX, trainY, grid_search))
+#
+#grid_search = True
+### Set params
+#for model, feature_set in models:
+#    model.set_params(**classifier_utils.find_params(model, feature_set, trainX, trainY, grid_search))
     
 dates = {#'Dates 1': [
-         # {'training': ['1993-08-19', '2011-07-08'], 'testing': ['2011-07-11', '2016-04-20']},
-         # {'training': ['1993-08-19', '2012-07-06'], 'testing': ['2012-07-09', '2016-04-20']},
-         # {'training': ['1993-08-19', '2013-07-08'], 'testing': ['2013-07-09', '2016-04-20']}],
-#         'Dates 2': [
-#          {'training': ['1993-08-19', '2000-08-18'], 'testing': ['2000-08-21', '2000-09-21', '2000-08-21', '2001-08-20']},
-#          {'training': ['1995-08-18', '2002-08-19'], 'testing': ['2002-08-20', '2002-09-20', '2002-08-20', '2003-08-20']}],
-#          {'training': ['1997-08-19', '2004-08-19'], 'testing': ['2004-08-20', '2004-09-20', '2004-08-20', '2005-08-19']},
-#          {'training': ['1999-08-19', '2006-08-18'], 'testing': ['2006-08-21', '2006-09-20', '2006-08-21', '2007-08-20']},
-#          {'training': ['2001-08-17', '2008-08-19'], 'testing': ['2008-08-20', '2008-09-22', '2008-08-20', '2009-08-20']},
-#          {'training': ['2003-08-19', '2010-08-19'], 'testing': ['2010-08-19', '2010-09-20', '2010-08-19', '2011-08-19']},
-#          {'training': ['2005-08-19', '2012-08-17'], 'testing': ['2012-08-20', '2012-09-20', '2012-08-20', '2013-08-20']},
-#          {'training': ['2007-08-17', '2015-05-19'], 'testing': ['2015-08-19', '2015-09-21', '2015-05-19', '2016-04-20']}],
-
-         'Dates 3': [
-          {'training': ['1998-08-19', '2000-08-18'], 'testing': ['2000-08-21', '2000-09-20', '2000-08-21', '2001-08-20']},
-          {'training': ['2000-08-18', '2002-08-19'], 'testing': ['2002-08-20', '2002-09-20', '2002-08-20', '2003-08-20']},
-          {'training': ['2002-08-19', '2004-08-19'], 'testing': ['2004-08-20', '2004-09-20', '2004-08-20', '2005-08-19']},
-          {'training': ['2004-08-19', '2006-08-18'], 'testing': ['2006-08-21', '2006-09-20', '2006-08-21', '2007-08-20']},
-          {'training': ['2006-08-17', '2008-08-19'], 'testing': ['2008-08-20', '2008-09-22', '2008-08-20', '2009-08-20']},
-          {'training': ['2008-08-19', '2010-08-19'], 'testing': ['2010-08-19', '2010-09-20', '2010-08-19', '2011-08-19']},
-          {'training': ['2010-08-19', '2012-08-17'], 'testing': ['2012-08-20', '2012-09-20', '2012-08-20', '2013-08-20']},
-          {'training': ['2012-08-17', '2015-05-19'], 'testing': ['2015-08-20', '2015-09-21', '2015-05-19', '2016-04-20']}]        
+         #{'training': ['1993-08-19', '2011-07-08'], 'testing': ['2011-07-11', '2016-04-20']},
+         #{'training': ['1993-08-19', '2012-07-06'], 'testing': ['2012-07-09', '2016-04-20']},
+         #{'training': ['1993-08-19', '2013-07-08'], 'testing': ['2013-07-09', '2016-04-20']}]
+         'Dates 2': [
+          {'training': ['1993-08-19', '2000-08-18'], 'testing': ['2000-08-21', '2000-09-21', '2000-08-21', '2001-08-20']},
+          {'training': ['1995-08-18', '2002-08-19'], 'testing': ['2002-08-20', '2002-09-20', '2002-08-20', '2003-08-20']},
+          {'training': ['1997-08-19', '2004-08-19'], 'testing': ['2004-08-20', '2004-09-20', '2004-08-20', '2005-08-19']},
+          {'training': ['1999-08-19', '2006-08-18'], 'testing': ['2006-08-21', '2006-09-20', '2006-08-21', '2007-08-20']},
+          {'training': ['2001-08-17', '2008-08-19'], 'testing': ['2008-08-20', '2008-09-22', '2008-08-20', '2009-08-20']},
+          {'training': ['2003-08-19', '2010-08-19'], 'testing': ['2010-08-19', '2010-09-20', '2010-08-19', '2011-08-19']},
+          {'training': ['2005-08-19', '2012-08-17'], 'testing': ['2012-08-20', '2012-09-20', '2012-08-20', '2013-08-20']},
+          {'training': ['2007-08-17', '2015-05-19'], 'testing': ['2015-08-19', '2015-09-21', '2015-05-19', '2016-04-20']}]
+#
+#         'Dates 3': [
+#          {'training': ['1998-08-19', '2000-08-18'], 'testing': ['2000-08-21', '2000-09-20', '2000-08-21', '2001-08-20']},
+#          {'training': ['2000-08-18', '2002-08-19'], 'testing': ['2002-08-20', '2002-09-20', '2002-08-20', '2003-08-20']},
+#          {'training': ['2002-08-19', '2004-08-19'], 'testing': ['2004-08-20', '2004-09-20', '2004-08-20', '2005-08-19']},
+#          {'training': ['2004-08-19', '2006-08-18'], 'testing': ['2006-08-21', '2006-09-20', '2006-08-21', '2007-08-20']},
+#          {'training': ['2006-08-17', '2008-08-19'], 'testing': ['2008-08-20', '2008-09-22', '2008-08-20', '2009-08-20']},
+#          {'training': ['2008-08-19', '2010-08-19'], 'testing': ['2010-08-19', '2010-09-20', '2010-08-19', '2011-08-19']},
+#          {'training': ['2010-08-19', '2012-08-17'], 'testing': ['2012-08-20', '2012-09-20', '2012-08-20', '2013-08-20']},
+#          {'training': ['2012-08-17', '2015-05-19'], 'testing': ['2015-08-20', '2015-09-21', '2015-05-19', '2016-04-20']}]        
         }
     
 colY = 'IBEX_RD_B1_Close'
@@ -192,7 +196,7 @@ experiments = {'Test 1': ["Log_Return_1_Close", "Log_Return_.*_Close", "RD1_Clos
                           "^(GOLD|SILVER|PLAT|OIL_BRENT)_RD_B.?"],
                'Test 4': ["Log_Return_1_(USD|Close)", "Log_Return_.*_(USD|Close)","RD1_(USD|Close)", "RD.?_(USD|Close)", "RD_P1_(USD|Close)", 
                           "RD_P.?_(USD|Close)", "RD_B1_(USD|Close)", "RD_B.?_(USD|Close)"],
-               'Test 5': ["Log_Return_1", "Log_Return_.*", "RD1", "RD_P.?_", "RD_P1", "RD_P.?_", "RD_B1", "RD_B.?_"]
+               'Test 5': ["Log_Return_1", "Log_Return_.*", "RD1", "RD_P.?_", "RD_P1", "RD_P.?_", "RD_B1", "RD_B.?_", ".*"]
               }
 
 features_list = []
@@ -218,43 +222,43 @@ start = time.time()
           
 for key_d in keys_dates:
     date_list = dates[key_d]
-    document.add_heading(str(key_d), level=1)
-    print "=================================================="
-    print "                    %s                     " % key_d 
-    print "=================================================="
-    print >> log, "=================================================="
-    print >> log, "                    %s                     " % str(key_d)
-    print >> log, "=================================================="
+#    document.add_heading(str(key_d), level=1)
+#    print "=================================================="
+#    print "                    %s                     " % key_d 
+#    print "=================================================="
+#    print >> log, "=================================================="
+#    print >> log, "                    %s                     " % str(key_d)
+#    print >> log, "=================================================="
 
 
-    ## Table headings
-    table = document.add_table(rows=1, cols=len(algorithms_list))
-    hdr_cells = table.rows[0].cells
-    for i in range(len(algorithms_list)):
-        hdr_cells[i].text = algorithms_list[i]
-        
-    ## Table headings for second table    
-    num_tables = len(date_list[0]['testing'])/2
-    if(num_tables == 2):
-        print "Creating second table..."
-        paragraph = document.add_paragraph('Segundo grupo de pruebas')
-        table2 = document.add_table(rows=1, cols=len(algorithms_list))
-        hdr_cells2 = table2.rows[0].cells
-        for i in range(len(algorithms_list)):
-            hdr_cells2[i].text = algorithms_list[i]
+#    ## Table headings
+#    table = document.add_table(rows=1, cols=len(algorithms_list))
+#    hdr_cells = table.rows[0].cells
+#    for i in range(len(algorithms_list)):
+#        hdr_cells[i].text = algorithms_list[i]
+#        
+#    ## Table headings for second table    
+#    num_tables = len(date_list[0]['testing'])/2
+#    if(num_tables == 2):
+#        print "Creating second table..."
+#        paragraph = document.add_paragraph('Segundo grupo de pruebas')
+#        table2 = document.add_table(rows=1, cols=len(algorithms_list))
+#        hdr_cells2 = table2.rows[0].cells
+#        for i in range(len(algorithms_list)):
+#            hdr_cells2[i].text = algorithms_list[i]
         
     for key_exp in keys_exp:
         regex_list = experiments[key_exp]
         sub_index = 1    
         for regex_element in regex_list:
-
-            print "++++++++++++++++++++++++++++++++++++++++++++++++++"
-            print "                    %s                  " % (key_exp + '-'+ str(sub_index)) 
-            print "++++++++++++++++++++++++++++++++++++++++++++++++++"
-            print >> log, "++++++++++++++++++++++++++++++++++++++++++++++++++"
-            print >> log, "                   %s                  " % (key_exp + '.'+ str(sub_index))
-            print >> log, "++++++++++++++++++++++++++++++++++++++++++++++++++"
-        
+#
+#            print "++++++++++++++++++++++++++++++++++++++++++++++++++"
+#            print "                    %s                  " % (key_exp + '-'+ str(sub_index)) 
+#            print "++++++++++++++++++++++++++++++++++++++++++++++++++"
+#            print >> log, "++++++++++++++++++++++++++++++++++++++++++++++++++"
+#            print >> log, "                   %s                  " % (key_exp + '.'+ str(sub_index))
+#            print >> log, "++++++++++++++++++++++++++++++++++++++++++++++++++"
+#        
             ##Trainig testing arrays
             df_x = dataset.filter(regex=(regex_element))
             df_x = df_x.drop(last_row, axis=0)
@@ -265,14 +269,14 @@ for key_d in keys_dates:
             print >> log, "df_y shape %s" % str(df_y.shape)        
             
             iteration_dates = 1
-
+#
             for iteration in date_list:
-                print "--------------------------------------------------"
-                print "                   Iteration %s           " % str(iteration_dates) 
-                print "--------------------------------------------------"                
-                print >> log, "--------------------------------------------------"                
-                print >> log, "                   Iteration %s            " % str(iteration_dates)
-                print >> log, "--------------------------------------------------"                
+#                print "--------------------------------------------------"
+#                print "                   Iteration %s           " % str(iteration_dates) 
+#                print "--------------------------------------------------"                
+#                print >> log, "--------------------------------------------------"                
+#                print >> log, "                   Iteration %s            " % str(iteration_dates)
+#                print >> log, "--------------------------------------------------"                
                 training_list = iteration['training']
                 testing_list = iteration['testing']
                 current_tables = len(testing_list)/2
@@ -283,13 +287,13 @@ for key_d in keys_dates:
                 clf = Stacking.Stacking(models, stack=False, fwls=False, model_selection=False, log=log)
                 
                 for index_test in range(0,len(testing_list),2):
-                    print ".................................................."                    
-                    print "                 Testing array %s           " % str(index_test) 
-                    print ".................................................."
-                    print >> log, ".................................................."
-                    print >> log, "                 Testing array %s            " % str(index_test)
-                    print >> log, ".................................................."
-
+#                    print ".................................................."                    
+#                    print "                 Testing array %s           " % str(index_test) 
+#                    print ".................................................."
+#                    print >> log, ".................................................."
+#                    print >> log, "                 Testing array %s            " % str(index_test)
+#                    print >> log, ".................................................."
+#
                     ## Training and testing indices
                     training_dates = Iteration.Iteration(training_list[0], training_list[1])
                     testing_dates  = Iteration.Iteration(testing_list[index_test+0], testing_list[index_test+1])
@@ -307,43 +311,43 @@ for key_d in keys_dates:
                     tr = float(trainDates[1]-trainDates[0]) / total * 100.0
                     te = float(testDates[1]-testDates[0]) / total * 100.0
     
-                    print >> log, "Training: from %s to %s" % (str(training_dates.startDate), str(training_dates.endDate))
-                    print >> log, "Testing: from %s to %s" % (str(testing_dates.startDate), str(testing_dates.endDate))
-                    print >> log, "%.3f %% training %.3f %% testing" % (tr,te)
-                    print >> log, "%d training %d testing" % (trainDates[1]-trainDates[0], testDates[1]-testDates[0])        
-                    trainX, trainY, testX, testY = ml_dataset.train_arrays_experiments(df_x, df_y, trainDates, testDates)
-                
-                    ## Fit stacking model
-                    if index_test == 0:
-                        clf.fit(trainY, trainX)
-                         
-                        
-                    ###  Metrics
-                    print >> log, "computing cv score"
-                    mean_auc = 0.0
-                    mean_accuracy = 0.0
-                    iter_ = 1
-
-                    cv_preds, models_score, models_f1 = clf.predict(trainY, trainX, testX, testY, show_steps=True)
-                    #cv_preds_bin = np.round_(cv_preds, decimals=0)
-                    #accuracy = metrics.accuracy_score(testY, cv_preds_bin)
-                    #f1 = metrics.f1_score(testY, cv_preds_bin)
-                    #print >> log, "Accuracy: %.2f" % accuracy
-                    
-                    ##  header
-                    if index_test == 0:  row_cells = table.add_row().cells
-                    else:  row_cells = table2.add_row().cells
-                        
-                    row_cells[0].text = key_exp + '.'+ str(sub_index)
-                    col = 1
-                    print models_score
-                    ##Table test X_X row
-                    for model in range(len(models_score)):
-                        cell = ("%.2f%%\n" % (models_score[model]*100))
-                        row_cells[col].text = cell
-                        col += 1
-
-
+#                    print >> log, "Training: from %s to %s" % (str(training_dates.startDate), str(training_dates.endDate))
+#                    print >> log, "Testing: from %s to %s" % (str(testing_dates.startDate), str(testing_dates.endDate))
+#                    print >> log, "%.3f %% training %.3f %% testing" % (tr,te)
+#                    print >> log, "%d training %d testing" % (trainDates[1]-trainDates[0], testDates[1]-testDates[0])        
+#                    trainX, trainY, testX, testY = ml_dataset.train_arrays_experiments(df_x, df_y, trainDates, testDates)
+#                
+#                    ## Fit stacking model
+#                    if index_test == 0:
+#                        clf.fit(trainY, trainX)
+#                         
+#                        
+#                    ###  Metrics
+#                    print >> log, "computing cv score"
+#                    mean_auc = 0.0
+#                    mean_accuracy = 0.0
+#                    iter_ = 1
+#
+#                    cv_preds, models_score, models_f1 = clf.predict(trainY, trainX, testX, testY, show_steps=True)
+#                    cv_preds_bin = np.round_(cv_preds, decimals=0)
+#                    accuracy = metrics.accuracy_score(testY, cv_preds_bin)
+#                    f1 = metrics.f1_score(testY, cv_preds_bin)
+#                    print >> log, "Accuracy: %.2f" % accuracy
+#                    
+#                    ##  header
+#                    if index_test == 0:  row_cells = table.add_row().cells
+#                    else:  row_cells = table2.add_row().cells
+#                        
+#                    row_cells[0].text = key_exp + '.'+ str(sub_index)
+#                    col = 1
+#                    print models_score
+#                    ##Table test X_X row
+#                    for model in range(len(models_score)):
+#                        cell = ("%.2f%%\n" % (models_score[model]*100))
+#                        row_cells[col].text = cell
+#                        col += 1
+#
+#
                     
                     num_experiments += 1
                     
